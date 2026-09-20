@@ -1,5 +1,7 @@
 # Draft post for r/vitahacks
 
+Reddit is blocked for the assistant, so this is the text to paste in yourself.
+
 Attach `docs/hero.png`. Suggested title:
 
 > **I gave an AI agent eyes and hands on my Vita: screen capture + input over TCP, with an MCP server [open source]**
@@ -50,7 +52,7 @@ Tested on a PCH-2000 on 3.65 Ensō. MIT. Kernel code is small and the privileged
 work is all syscalls, so a bug in the network service kills a user process rather
 than the kernel. I did still crash the console three times getting there.
 
-Repo: <link>
+Repo: https://github.com/mvizensk/vita-agent-bridge
 
 Some quirks I hit, in case they save someone time:
 - The shell ignores injected buttons entirely, except PS. System dialogs and
