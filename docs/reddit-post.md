@@ -2,7 +2,8 @@
 
 Reddit is blocked for the assistant, so this is the text to paste in yourself.
 
-Attach `docs/hero.png`. Suggested title:
+Attach `docs/mcp.png` as the lead image (`docs/hero.png` works as a second one).
+Suggested title:
 
 > **I gave an AI agent eyes and hands on my Vita: screen capture + input over TCP, with an MCP server [open source]**
 
