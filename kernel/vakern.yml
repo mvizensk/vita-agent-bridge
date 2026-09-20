@@ -1,0 +1,22 @@
+VitaAgentBridgeK1:
+  attributes: 0
+  version:
+    major: 2
+    minor: 7
+  main:
+    start: module_start
+    stop: module_stop
+  libraries:
+    VitaAgentBridgeK1:
+      syscall: true
+      functions:
+        - vakGetVersion
+        - vakGetPlaneInfo
+        - vakReadRows
+        - vakButtons
+        - vakAnalog
+        - vakAwake
+        - vakKillForeground
+        - vakDebug
+        - vakTouch
+        - vakShellBridge

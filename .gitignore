@@ -1,0 +1,6 @@
+build/
+*.velf
+*.elf
+token.txt
+.vita-agent-token
+__pycache__/
