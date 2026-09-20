@@ -1,6 +1,6 @@
 # vita-agent-bridge
 
-**See and control a PS Vita over the network — and let an AI agent do it.**
+**See and control a PS Vita over the network, and let an AI agent do it.**
 
 A kernel plugin plus a TCP service that lives *inside* SceShell. It captures the
 screen, injects buttons and touch, launches apps, reads files and can cold-reset
@@ -26,7 +26,7 @@ it does not have:
 | | vitacompanion | vita-agent-bridge |
 |---|---|---|
 | Buttons / analog / touch | yes | yes |
-| **Screen capture** | no | **yes — both planes, full or half res** |
+| **Screen capture** | no | **yes, both planes, full or half res** |
 | Survives a game launching | background app, gets evicted | **lives in SceShell** |
 | Recover a wedged shell | – | **`reboot` from inside the shell** |
 | Read files while a game runs | FTP dies with the app | **`ls` / `get` over the same socket** |
@@ -52,7 +52,7 @@ Requires HENkaku Ensō (tested on 3.65) and taiHEN.
 1. Grab `vakern.skprx` and `vabridge.suprx` from Releases, or build them
    (VitaSDK, then `cmake -S . -B build && cmake --build build`).
 2. On the console, create `ur0:data/vita-agent-bridge/` and copy both modules in.
-3. Make a token — 64 hex characters, unique to your console:
+3. Make a token, 64 hex characters, unique to your console:
    ```sh
    python3 -c "import secrets; print(secrets.token_hex(32))" > token.txt
    ```
@@ -88,7 +88,7 @@ python3 cli/vita.py status
 Twelve tools: `vita_screenshot`, `vita_press`, `vita_tap`, `vita_swipe`,
 `vita_launch`, `vita_status`, `vita_list_files`, `vita_read_file`,
 `vita_free_space`, `vita_close_app`, `vita_keep_awake`, `vita_reboot`.
-Standard library only — no pip install.
+Standard library only, no pip install.
 
 ## Security, plainly
 
@@ -104,7 +104,7 @@ encryption and no rate limiting.
 
 ## Known quirks (learned the hard way)
 
-- The system shell ignores injected buttons — everything except PS. Shell
+- The system shell ignores injected buttons, everything except PS. Shell
   dialogs, LiveArea pages and Settings need **touch**.
 - The console confirms with ○ in the shell but ✕ inside apps.
 - Launching an app while another runs shows a "will close" dialog: tap 654,444.
@@ -113,7 +113,7 @@ encryption and no rate limiting.
 - The Vita sleeps when idle and takes Wi-Fi with it. `vita_keep_awake` /
   `vita.py awake 1` before long unattended work.
 - A kernel module that exports syscalls cannot be unloaded. Each revision needs a
-  new module and library name — that is why the names carry a number.
+  new module and library name, which is why the names carry a number.
 
 ## How it fits together
 
@@ -129,7 +129,7 @@ vita.py / MCP server  --TCP 1348--> vabridge.suprx   (inside SceShell)
 
 `vakern` hooks twelve `SceCtrl` entry points and four `ksceTouch` ones (the
 ds4vita pattern), reads both display planes, and injects `vabridge` into SceShell
-with `ksceKernelLoadStartModuleForPid` — the shell is the one process games never
+with `ksceKernelLoadStartModuleForPid`. The shell is the one process games never
 evict. `vabridge` is just a TCP front end: every privileged action is a syscall,
 so a mistake there kills a user process, not the kernel.
 
@@ -137,7 +137,7 @@ See [docs/protocol.md](docs/protocol.md) for the wire format.
 
 ## Credits and licence
 
-MIT — see [LICENSE](LICENSE). The touch-hook approach follows
+MIT, see [LICENSE](LICENSE). The touch-hook approach follows
 [ds4vita](https://github.com/xerpi/ds4vita); built with
 [VitaSDK](https://vitasdk.org) and [taiHEN](https://github.com/yifanlu/taiHEN).
 

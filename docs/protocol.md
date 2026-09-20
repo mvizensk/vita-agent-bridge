@@ -13,12 +13,12 @@ fails gets `ERR auth\n` and nothing else happens.
 |---|---|
 | `status` | `OK vita-agent-bridge <ver> vakern=0x%04X app=%08X pid=0x%08X <w>x<h> shell=%08X pid=0x%08X` |
 | `shot [half]` | two planes, app then shell (see below) |
-| `hold <mask> <ms>` | `OK hold` — mask is the SceCtrl button bits |
-| `stick <lx> <ly> <rx> <ry> <ms>` | `OK stick` — 0-255 each |
-| `touch <x> <y> <ms>` | `OK touch rc=0x…` — screen pixels, 960x544 space |
-| `swipe <x1> <y1> <x2> <y2> <ms>` | `OK swipe rc=0x…` — linear drag, 16-10000 ms |
-| `launch <TITLEID>` | `OK launch <id> rc=0x…` — nine chars, A-Z0-9 |
-| `kill-fg` | `OK kill-fg rc=0x…` — never kills the shell itself |
+| `hold <mask> <ms>` | `OK hold`, mask is the SceCtrl button bits |
+| `stick <lx> <ly> <rx> <ry> <ms>` | `OK stick`, 0-255 each |
+| `touch <x> <y> <ms>` | `OK touch rc=0x...`, screen pixels in 960x544 space |
+| `swipe <x1> <y1> <x2> <y2> <ms>` | `OK swipe rc=0x...`, linear drag, 16-10000 ms |
+| `launch <TITLEID>` | `OK launch <id> rc=0x...`, nine chars A-Z0-9 |
+| `kill-fg` | `OK kill-fg rc=0x...`, never kills the shell itself |
 | `awake <0\|1>` | `OK awake <n>` |
 | `ls <path>` | `d\|f <size> <name>` per line, then `OK ls <count>` |
 | `get <path>` | `OK get <size>\n` then raw bytes |
@@ -30,7 +30,7 @@ Paths must be device-qualified (`ux0:...`) and may not contain `..`.
 
 ## Screenshots
 
-`shot` writes two planes back to back — the foreground app's, then the shell's.
+`shot` writes two planes back to back: the foreground app's, then the shell's.
 Each is a 24-byte header followed by RGBA rows:
 
 ```c
