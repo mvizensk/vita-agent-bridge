@@ -69,7 +69,7 @@ Requires HENkaku Ensō (tested on 3.65) and taiHEN.
 5. Reboot. `vakern` injects the bridge into SceShell and it listens on **1348**.
 
 ```sh
-export VITA_HOST=192.168.1.28
+export VITA_HOST=192.168.1.50
 python3 cli/vita.py status
 ```
 
@@ -80,7 +80,7 @@ python3 cli/vita.py status
   "vita": {
     "command": "python3",
     "args": ["/path/to/vita-agent-bridge/mcp/vita_mcp.py"],
-    "env": {"VITA_HOST": "192.168.1.28"}
+    "env": {"VITA_HOST": "192.168.1.50"}
   }
 }
 ```

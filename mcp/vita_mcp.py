@@ -11,7 +11,7 @@ Configure (Claude Desktop / Claude Code, claude_desktop_config.json):
       "vita": {
         "command": "python3",
         "args": ["/path/to/vita-agent-bridge/mcp/vita_mcp.py"],
-        "env": {"VITA_HOST": "192.168.1.28"}
+        "env": {"VITA_HOST": "192.168.1.50"}
       }
     }
 

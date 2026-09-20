@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Drive a PS Vita running vita-agent-bridge: look at the screen, press things.
 
-    export VITA_HOST=192.168.1.28          # or pass --host
+    export VITA_HOST=192.168.1.50          # or pass --host
     vita.py status                          # version, foreground app, screen size
     vita.py shot screen.png [--half]        # both planes; .app/.shell written too
     vita.py press cross                     # one button
