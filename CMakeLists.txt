@@ -25,10 +25,14 @@ vita_create_stubs(vakern_stubs vakern ${CMAKE_SOURCE_DIR}/kernel/vakern.yml KERN
 
 # User side: the TCP service, injected into SceShell by vakern so that games
 # cannot evict it. Reads its token from ur0:data/vita-agent-bridge/token.txt.
-add_executable(vabridge bridge/vabridge.c)
+add_executable(vabridge bridge/vabridge.c bridge/fileops.c bridge/sha256.c bridge/fetch.c)
 add_dependencies(vabridge vakern_stubs)
 target_link_libraries(vabridge ${CMAKE_CURRENT_BINARY_DIR}/vakern_stubs/libVitaAgentBridgeK1_stub.a
   SceLibKernel_stub ScePower_stub SceKernelThreadMgr_stub SceIofilemgr_stub
-  SceNet_stub SceProcessmgr_stub SceAppMgr_stub gcc)
+  SceNet_stub SceProcessmgr_stub SceAppMgr_stub SceSysmem_stub
+  SceHttp_stub_weak SceSsl_stub_weak gcc)
+# HTTP/SSL are weak imports: a shell without them still loads the bridge and
+# fetch reports the error. -nostdlib: keep gcc from emitting memset calls.
+target_compile_options(vabridge PRIVATE -fno-tree-loop-distribute-patterns)
 set_target_properties(vabridge PROPERTIES LINK_FLAGS "-nostdlib")
 vita_create_self(vabridge.suprx vabridge CONFIG ${CMAKE_SOURCE_DIR}/bridge/vabridge.yml UNSAFE)

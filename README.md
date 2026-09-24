@@ -4,7 +4,7 @@
 
 A kernel plugin plus a TCP service that lives *inside* SceShell. It captures the
 screen, injects buttons and touch, launches apps, reads files and can cold-reset
-the console. A CLI drives it from a terminal; an MCP server hands the same
+the console, and manages files on the card. A CLI drives it from a terminal; an MCP server hands the same
 abilities to any agent that speaks MCP (Claude Desktop, Claude Code, and others).
 
 ```
@@ -29,8 +29,10 @@ it does not have:
 | **Screen capture** | no | **yes, both planes, full or half res** |
 | Survives a game launching | background app, gets evicted | **lives in SceShell** |
 | Recover a wedged shell | – | **`reboot` from inside the shell** |
-| Read files while a game runs | FTP dies with the app | **`ls` / `get` over the same socket** |
-| Free space | – | `df` |
+| Files while a game runs | FTP dies with the app | **read, write, copy, move, delete, hash over the same socket** |
+| Checked transfers | – | **every upload SHA-256 verified on the console** |
+| Downloads on the console | – | `fetch` a URL straight to the card |
+| Free space, battery | – | `df`, `battery` |
 | Agent integration | – | **MCP server included** |
 
 If you only need to push files and launch things, use vitacompanion. If you want
@@ -85,21 +87,30 @@ python3 cli/vita.py status
 }
 ```
 
-Twelve tools: `vita_screenshot`, `vita_press`, `vita_tap`, `vita_swipe`,
-`vita_launch`, `vita_status`, `vita_list_files`, `vita_read_file`,
-`vita_free_space`, `vita_close_app`, `vita_keep_awake`, `vita_reboot`.
+Twenty-three tools. Looking and acting: `vita_screenshot`, `vita_press`,
+`vita_tap`, `vita_swipe`, `vita_unlock`. Apps: `vita_launch`, `vita_close_app`,
+`vita_status`. Files: `vita_list_files`, `vita_read_file`, `vita_file_info`,
+`vita_upload_file`, `vita_download_file`, `vita_make_folder`, `vita_copy`,
+`vita_move`, `vita_delete`, `vita_sha256`, `vita_fetch_url`, `vita_free_space`.
+Console: `vita_battery`, `vita_keep_awake`, `vita_reboot`.
 Standard library only, no pip install.
 
 ## Security, plainly
 
 This opens a plaintext TCP port on a console that will, for anyone holding the
-token: read any file, press any button, launch anything, and reboot. There is no
-encryption and no rate limiting.
+token: read any file, write and delete files, press any button, launch anything,
+and reboot. There is no encryption and no rate limiting.
 
 - Trusted LAN only. **Never** port-forward 1348.
 - The token is compared in full before any command runs, and it is read from
   your console's own file rather than compiled in, so no two installs share one.
-- File access is **read-only**: nothing here writes to the card.
+- Writes are fenced in by the bridge itself, not by the client: only the user
+  partitions (ux0, ur0, uma0, imc0, grw0, xmc0), never anything under `tai/`
+  (a bad `config.txt` stops the console booting), never a device root, a
+  top-level folder like `ux0:app`, or the bridge's own token folder. Every
+  upload lands as `.part` and is renamed only once complete and hashed.
+- `fetch` checks certificates and never turns that off: doing so is
+  process-wide and would weaken the system shell's own HTTPS.
 - If that trade is not right for you, do not install it.
 
 ## Known quirks (learned the hard way)
@@ -107,11 +118,21 @@ encryption and no rate limiting.
 - The system shell ignores injected buttons, everything except PS. Shell
   dialogs, LiveArea pages and Settings need **touch**.
 - The console confirms with ○ in the shell but ✕ inside apps.
-- Launching an app while another runs shows a "will close" dialog: tap 654,444.
+- Launching an app while another runs shows a "will close" dialog: tap 654,444,
+  or use `launch TITLEID force` to close what is on screen first. `launch`
+  already handles the lock screen and the LiveArea gate (right after an app
+  exits, the first launch only opens its LiveArea page).
 - A LiveArea "Start" button sometimes ignores synthetic taps. Nobody has got to
   the bottom of that one; a real finger works.
 - The Vita sleeps when idle and takes Wi-Fi with it. `vita_keep_awake` /
   `vita.py awake 1` before long unattended work.
+- Transfers top out around 2.2 MB/s on the Vita's Wi-Fi. Two run at once; a
+  third is told `ERR busy` and the CLI retries. Three streams with large socket
+  buffers once exhausted SceShell's network memory and dropped Wi-Fi for
+  minutes, so the limits are deliberate.
+- The console's TLS dates from 2018. Many modern HTTPS hosts (GitHub's CDN
+  among them) refuse it, so `fetch` fails there: download on your machine and
+  `put` it instead.
 - A kernel module that exports syscalls cannot be unloaded. Each revision needs a
   new module and library name, which is why the names carry a number.
 
